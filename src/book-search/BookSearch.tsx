@@ -1,9 +1,16 @@
 import React, {useContext, useEffect, useState} from "react";
+
 import { getBooksByType } from "./book-search.service";
 import useDebounce from "../hooks/useDebounce";
-import {Book} from "../models/book";
-import {ADD_BOOK} from "../reducers/AppReducer";
-import {AppContext} from "../contexts/AppContext";
+import { Book } from "../models/book";
+import { ADD_BOOK } from "../reducers/AppReducer";
+import { AppContext } from "../contexts/AppContext";
+import BookRow from "../book/BookRow";
+
+
+export interface addClickInterface {
+    (book: Book): void;
+}
 
 const BookSearch = () => {
     const [bookType, updateBookType] = useState("");
@@ -37,7 +44,7 @@ const BookSearch = () => {
         await requestBooks(e.currentTarget.value)
     }
 
-    const handleAddBook = (book: Book) => {
+    const handleAddBook: addClickInterface = (book: Book) => {
         appDispatch({
             type: ADD_BOOK,
             data: book,
@@ -70,7 +77,7 @@ const BookSearch = () => {
                                                 updateBookType("Javascript");
                                             }}
                                         >
-                                            {" "}
+                                            &nbsp;
                                             "Javascript"
                                         </a>
                                     </p>
@@ -78,28 +85,12 @@ const BookSearch = () => {
                             )}
 
                             {allAvailableBooks?.length > 0 && <div className="books-list">
-                                {allAvailableBooks.map(item => <div key={item?.id} className="book">
-                                        <div className="book--image">
-                                            <img
-                                                src={item?.volumeInfo?.imageLinks?.thumbnail}
-                                                alt={item?.volumeInfo?.title}
-                                            />
-                                        </div>
-                                        <div className="book--description">
-                                            <div>
-                                                <h3><a href={item?.volumeInfo.previewLink} target="_blank">{item?.volumeInfo?.title}</a></h3>
-                                                <h4>{item?.volumeInfo?.authors?.join(', ')}</h4>
-                                                {item?.volumeInfo?.publisher && <span>{item?.volumeInfo?.publisher}, </span>}
-                                                <span>{item?.volumeInfo?.publishedDate}</span>
-                                            </div>
-                                            <div>
-                                                <button onClick={() => handleAddBook(item)}>+ Add to favorites.</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
+                                {allAvailableBooks.map(item => <BookRow
+                                    book={item}
+                                    onAddClick={handleAddBook}
+                                    key={item.id}
+                                />)}
                             </div>}
-
                         </div>
                     </div>
                 </div>

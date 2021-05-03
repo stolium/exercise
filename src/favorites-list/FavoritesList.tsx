@@ -15,10 +15,12 @@ const FavoritesList = () => {
 
     return (<div className="reading-list-container">
         <h2>My reading wishlist ({appState.books.size})</h2>
-        {[...appState.books].map(([id, book]) => <div key={id} className="reading-list-content">
-            <div>{book.volumeInfo.title}</div>
-            <div className="pointer" onClick={() => handleRemove(book)}>[-]</div>
-        </div>)}
+        <div className="reading-list">
+            {[...appState.books].map(([id, book]) => <div key={id} className="reading-list-content">
+                <div>{book.volumeInfo.title}</div>
+                <div className="pointer" onClick={() => handleRemove(book)}>[-]</div>
+            </div>)}
+        </div>
     </div>);
 }
 
